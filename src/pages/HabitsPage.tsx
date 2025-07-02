@@ -1,59 +1,69 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowLeft, Plus, Target, Flame, CheckCircle2, Circle, Trash2 } from 'lucide-react'
-import { Habit } from '../types/habit'
-import { calculateStreak, isCompletedToday } from '../utils/habitUtils'
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  Plus,
+  Target,
+  Flame,
+  CheckCircle2,
+  Circle,
+  Trash2,
+} from "lucide-react";
+import type { Habit } from "../types/habit";
+import { calculateStreak, isCompletedToday } from "../utils/habitUtils";
 
 export default function HabitsPage() {
-  const [habits, setHabits] = useState<Habit[]>([])
+  const [habits, setHabits] = useState<Habit[]>([]);
 
   useEffect(() => {
-    const savedHabits = localStorage.getItem('habits')
+    const savedHabits = localStorage.getItem("habits");
     if (savedHabits) {
-      setHabits(JSON.parse(savedHabits))
+      setHabits(JSON.parse(savedHabits));
     }
-  }, [])
+  }, []);
 
   const saveHabits = (updatedHabits: Habit[]) => {
-    setHabits(updatedHabits)
-    localStorage.setItem('habits', JSON.stringify(updatedHabits))
-  }
+    setHabits(updatedHabits);
+    localStorage.setItem("habits", JSON.stringify(updatedHabits));
+  };
 
   const toggleHabit = (habitId: string) => {
-    const today = new Date().toISOString().split('T')[0]
-    const updatedHabits = habits.map(habit => {
+    const today = new Date().toISOString().split("T")[0];
+    const updatedHabits = habits.map((habit) => {
       if (habit.id === habitId) {
-        const completed = habit.completedDates.includes(today)
-        
+        const completed = habit.completedDates.includes(today);
+
         if (completed) {
           return {
             ...habit,
             completedToday: false,
-            completedDates: habit.completedDates.filter(date => date !== today),
-            streak: Math.max(0, habit.streak - 1)
-          }
+            completedDates: habit.completedDates.filter(
+              (date) => date !== today
+            ),
+            streak: Math.max(0, habit.streak - 1),
+          };
         } else {
-          const newCompletedDates = [...habit.completedDates, today].sort()
-          const newStreak = calculateStreak(newCompletedDates)
-          
+          const newCompletedDates = [...habit.completedDates, today].sort();
+          const newStreak = calculateStreak(newCompletedDates);
+
           return {
             ...habit,
             completedToday: true,
             completedDates: newCompletedDates,
-            streak: newStreak
-          }
+            streak: newStreak,
+          };
         }
       }
-      return habit
-    })
-    
-    saveHabits(updatedHabits)
-  }
+      return habit;
+    });
+
+    saveHabits(updatedHabits);
+  };
 
   const deleteHabit = (habitId: string) => {
-    const updatedHabits = habits.filter(habit => habit.id !== habitId)
-    saveHabits(updatedHabits)
-  }
+    const updatedHabits = habits.filter((habit) => habit.id !== habitId);
+    saveHabits(updatedHabits);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -61,16 +71,24 @@ export default function HabitsPage() {
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Link to="/dashboard" className="text-gray-400 hover:text-gray-600 transition-colors">
+              <Link
+                to="/dashboard"
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
                 <ArrowLeft className="w-6 h-6" />
               </Link>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">My Habits</h1>
-                <p className="text-sm text-gray-600">Manage and track your habits</p>
+                <p className="text-sm text-gray-600">
+                  Manage and track your habits
+                </p>
               </div>
             </div>
-            
-            <Link to="/habits/new" className="btn-primary flex items-center space-x-2">
+
+            <Link
+              to="/habits/new"
+              className="btn-primary flex items-center space-x-2"
+            >
               <Plus className="w-5 h-5" />
               <span>Add Habit</span>
             </Link>
@@ -84,8 +102,12 @@ export default function HabitsPage() {
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Target className="w-12 h-12 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No habits yet</h3>
-            <p className="text-gray-600 mb-6">Start building better habits by creating your first one!</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              No habits yet
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Start building better habits by creating your first one!
+            </p>
             <Link to="/habits/new" className="btn-primary">
               Create Your First Habit
             </Link>
@@ -93,18 +115,25 @@ export default function HabitsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {habits.map((habit) => {
-              const completed = isCompletedToday(habit)
-              
+              const completed = isCompletedToday(habit);
+
               return (
-                <div key={habit.id} className="card p-6 hover:scale-105 transition-transform duration-200">
+                <div
+                  key={habit.id}
+                  className="card p-6 hover:scale-105 transition-transform duration-200"
+                >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 mb-1">{habit.name}</h3>
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        {habit.name}
+                      </h3>
                       {habit.description && (
-                        <p className="text-sm text-gray-600">{habit.description}</p>
+                        <p className="text-sm text-gray-600">
+                          {habit.description}
+                        </p>
                       )}
                     </div>
-                    <div 
+                    <div
                       className="w-4 h-4 rounded-full flex-shrink-0 ml-3"
                       style={{ backgroundColor: habit.color }}
                     />
@@ -127,8 +156,8 @@ export default function HabitsPage() {
                       onClick={() => toggleHabit(habit.id)}
                       className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                         completed
-                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          ? "bg-green-100 text-green-700 hover:bg-green-200"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
                       {completed ? (
@@ -136,7 +165,7 @@ export default function HabitsPage() {
                       ) : (
                         <Circle className="w-4 h-4" />
                       )}
-                      <span>{completed ? 'Completed' : 'Mark Done'}</span>
+                      <span>{completed ? "Completed" : "Mark Done"}</span>
                     </button>
 
                     <button
@@ -147,11 +176,11 @@ export default function HabitsPage() {
                     </button>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         )}
       </main>
     </div>
-  )
+  );
 }

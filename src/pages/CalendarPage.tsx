@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import HabitCalendar from '../components/HabitCalendar'
-import { Habit } from '../types/habit'
+import type { Habit } from '../types/habit'
 import { calculateStreak } from '../utils/habitUtils'
 
 export default function CalendarPage() {

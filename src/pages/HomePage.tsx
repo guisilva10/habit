@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Target, TrendingUp, CheckCircle2, Calendar } from "lucide-react";
-import { Habit } from "../types/habit";
+import type { Habit } from "../types/habit";
 import { calculateStreak, isCompletedToday } from "../utils/habitUtils";
 import HabitCalendarWidget from "../components/HabitCalendarWidget";
 
